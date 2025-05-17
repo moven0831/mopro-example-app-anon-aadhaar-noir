@@ -9,7 +9,7 @@ global MAX_YEARS: u32 = 2032;
 global INCLUDE_HOURS: bool = true;
 global INCLUDE_MINUTES: bool = false;
 global INCLUDE_SECONDS: bool = false;
-global MAX_DATA_LENGTH: u32 = 1536;
+global MAX_DATA_LENGTH: u32 = 1200;
 global DELIMITER_INDICES_LENGTH: u32 = 18;
 global LIMBS_SIZE: u32 = 18;
 global IST_OFFSET: Field = 19800;
@@ -29,14 +29,14 @@ pub struct RevealedData {
     pubkey_hash: Field,
 }
 
-// circuit size: 237811
+// circuit size: 169810
 pub fn main(
     qrDataPadded: QRData,
     qrDataPaddedLength: u32,
     delimiterIndices: [u8; DELIMITER_INDICES_LENGTH],
-    signature_limbs: [Field; LIMBS_SIZE],
-    modulus_limbs: [Field; LIMBS_SIZE],
-    redc_limbs: [Field; LIMBS_SIZE],
+    signature_limbs: [u128; LIMBS_SIZE],
+    modulus_limbs: [u128; LIMBS_SIZE],
+    redc_limbs: [u128; LIMBS_SIZE],
     revealAgeAbove18: bool,
     revealGender: bool,
     revealPinCode: bool,
