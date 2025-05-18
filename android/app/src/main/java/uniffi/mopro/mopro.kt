@@ -65,7 +65,7 @@ open class RustBuffer : Structure() {
         internal fun alloc(size: ULong = 0UL) =
             uniffiRustCall { status ->
                 // Note: need to convert the size to a `Long` value to make this work with JVM.
-                UniffiLib.INSTANCE.ffi_mopro_example_app_keccak256_rustbuffer_alloc(size.toLong(), status)
+                UniffiLib.INSTANCE.ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_alloc(size.toLong(), status)
             }.also {
                 if (it.data == null) {
                     throw RuntimeException("RustBuffer.alloc() returned null data pointer (size=$size)")
@@ -86,7 +86,7 @@ open class RustBuffer : Structure() {
 
         internal fun free(buf: RustBuffer.ByValue) =
             uniffiRustCall { status ->
-                UniffiLib.INSTANCE.ffi_mopro_example_app_keccak256_rustbuffer_free(buf, status)
+                UniffiLib.INSTANCE.ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_free(buf, status)
             }
     }
 
@@ -401,7 +401,7 @@ private fun findLibraryName(componentName: String): String {
     if (libOverride != null) {
         return libOverride
     }
-    return "mopro_example_app_keccak256"
+    return "mopro_example_app_anon_aadhaar_noir"
 }
 
 private inline fun <reified Lib : Library> loadIndirect(componentName: String): Lib =
@@ -764,23 +764,23 @@ internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
 // when the library is loaded.
 internal interface IntegrityCheckingUniffiLib : Library {
     // Integrity check functions only
-    fun uniffi_mopro_example_app_keccak256_checksum_func_generate_circom_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_circom_proof(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_generate_halo2_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_halo2_proof(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_generate_noir_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_noir_proof(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_prove_keccak256_simple(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_prove_anon_aadhaar_simple(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_verify_circom_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_anon_aadhaar_simple(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_verify_halo2_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_circom_proof(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_verify_keccak256_simple(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_halo2_proof(): Short
 
-    fun uniffi_mopro_example_app_keccak256_checksum_func_verify_noir_proof(): Short
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_noir_proof(): Short
 
-    fun ffi_mopro_example_app_keccak256_uniffi_contract_version(): Int
+    fun ffi_mopro_example_app_anon_aadhaar_noir_uniffi_contract_version(): Int
 }
 
 // A JNA Library to expose the extern-C FFI definitions.
@@ -822,41 +822,47 @@ internal interface UniffiLib : Library {
     }
 
     // FFI functions
-    fun uniffi_mopro_example_app_keccak256_fn_func_generate_circom_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_circom_proof(
         `zkeyPath`: RustBuffer.ByValue,
         `circuitInputs`: RustBuffer.ByValue,
         `proofLib`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_generate_halo2_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_halo2_proof(
         `srsPath`: RustBuffer.ByValue,
         `pkPath`: RustBuffer.ByValue,
         `circuitInputs`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_generate_noir_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_noir_proof(
         `circuitPath`: RustBuffer.ByValue,
         `srsPath`: RustBuffer.ByValue,
         `inputs`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_prove_keccak256_simple(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_prove_anon_aadhaar_simple(
         `srsPath`: RustBuffer.ByValue,
         `inputs`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_verify_circom_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_anon_aadhaar_simple(
+        `srsPath`: RustBuffer.ByValue,
+        `proof`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): Byte
+
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_circom_proof(
         `zkeyPath`: RustBuffer.ByValue,
         `proofResult`: RustBuffer.ByValue,
         `proofLib`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): Byte
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_verify_halo2_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_halo2_proof(
         `srsPath`: RustBuffer.ByValue,
         `vkPath`: RustBuffer.ByValue,
         `proof`: RustBuffer.ByValue,
@@ -864,230 +870,224 @@ internal interface UniffiLib : Library {
         uniffi_out_err: UniffiRustCallStatus,
     ): Byte
 
-    fun uniffi_mopro_example_app_keccak256_fn_func_verify_keccak256_simple(
-        `srsPath`: RustBuffer.ByValue,
-        `proof`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): Byte
-
-    fun uniffi_mopro_example_app_keccak256_fn_func_verify_noir_proof(
+    fun uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_noir_proof(
         `circuitPath`: RustBuffer.ByValue,
         `proof`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): Byte
 
-    fun ffi_mopro_example_app_keccak256_rustbuffer_alloc(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_alloc(
         `size`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun ffi_mopro_example_app_keccak256_rustbuffer_from_bytes(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_from_bytes(
         `bytes`: ForeignBytes.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun ffi_mopro_example_app_keccak256_rustbuffer_free(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_free(
         `buf`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rustbuffer_reserve(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_reserve(
         `buf`: RustBuffer.ByValue,
         `additional`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_u8(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_u8(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_u8(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_u8(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_u8(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_u8(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_u8(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_u8(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Byte
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_i8(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_i8(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_i8(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_i8(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_i8(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_i8(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_i8(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_i8(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Byte
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_u16(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_u16(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_u16(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_u16(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_u16(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_u16(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_u16(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_u16(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Short
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_i16(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_i16(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_i16(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_i16(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_i16(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_i16(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_i16(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_i16(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Short
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_u32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_u32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_u32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_u32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_u32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_u32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_u32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_u32(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Int
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_i32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_i32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_i32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_i32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_i32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_i32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_i32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_i32(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Int
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_u64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_u64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_u64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_u64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_u64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_u64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_u64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_u64(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Long
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_i64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_i64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_i64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_i64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_i64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_i64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_i64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_i64(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Long
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_f32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_f32(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_f32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_f32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_f32(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_f32(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_f32(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_f32(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Float
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_f64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_f64(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_f64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_f64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_f64(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_f64(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_f64(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_f64(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Double
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_pointer(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_pointer(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_pointer(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_pointer(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_pointer(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_pointer(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_pointer(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_pointer(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Pointer
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_rust_buffer(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_rust_buffer(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_rust_buffer(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_rust_buffer(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_rust_buffer(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_rust_buffer(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_rust_buffer(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_rust_buffer(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun ffi_mopro_example_app_keccak256_rust_future_poll_void(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_poll_void(
         `handle`: Long,
         `callback`: UniffiRustFutureContinuationCallback,
         `callbackData`: Long,
     ): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_cancel_void(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_cancel_void(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_free_void(`handle`: Long): Unit
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_free_void(`handle`: Long): Unit
 
-    fun ffi_mopro_example_app_keccak256_rust_future_complete_void(
+    fun ffi_mopro_example_app_anon_aadhaar_noir_rust_future_complete_void(
         `handle`: Long,
         uniffi_out_err: UniffiRustCallStatus,
     ): Unit
@@ -1097,7 +1097,7 @@ private fun uniffiCheckContractApiVersion(lib: IntegrityCheckingUniffiLib) {
     // Get the bindings contract version from our ComponentInterface
     val bindings_contract_version = 29
     // Get the scaffolding contract version by calling the into the dylib
-    val scaffolding_contract_version = lib.ffi_mopro_example_app_keccak256_uniffi_contract_version()
+    val scaffolding_contract_version = lib.ffi_mopro_example_app_anon_aadhaar_noir_uniffi_contract_version()
     if (bindings_contract_version != scaffolding_contract_version) {
         throw RuntimeException("UniFFI contract version mismatch: try cleaning and rebuilding your project")
     }
@@ -1105,28 +1105,28 @@ private fun uniffiCheckContractApiVersion(lib: IntegrityCheckingUniffiLib) {
 
 @Suppress("UNUSED_PARAMETER")
 private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_generate_circom_proof() != 59512.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_circom_proof() != 6117.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_generate_halo2_proof() != 50946.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_halo2_proof() != 1693.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_generate_noir_proof() != 11214.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_noir_proof() != 29049.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_prove_keccak256_simple() != 61307.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_prove_anon_aadhaar_simple() != 14586.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_verify_circom_proof() != 55715.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_anon_aadhaar_simple() != 11426.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_verify_halo2_proof() != 435.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_circom_proof() != 18845.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_verify_keccak256_simple() != 49870.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_halo2_proof() != 13449.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_mopro_example_app_keccak256_checksum_func_verify_noir_proof() != 25805.toShort()) {
+    if (lib.uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_noir_proof() != 28357.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -1695,7 +1695,7 @@ fun `generateCircomProof`(
 ): CircomProofResult =
     FfiConverterTypeCircomProofResult.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_generate_circom_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_circom_proof(
                 FfiConverterString.lower(`zkeyPath`),
                 FfiConverterString.lower(`circuitInputs`),
                 FfiConverterTypeProofLib.lower(`proofLib`),
@@ -1712,7 +1712,7 @@ fun `generateHalo2Proof`(
 ): Halo2ProofResult =
     FfiConverterTypeHalo2ProofResult.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_generate_halo2_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_halo2_proof(
                 FfiConverterString.lower(`srsPath`),
                 FfiConverterString.lower(`pkPath`),
                 FfiConverterMapStringSequenceString.lower(`circuitInputs`),
@@ -1729,7 +1729,7 @@ fun `generateNoirProof`(
 ): kotlin.ByteArray =
     FfiConverterByteArray.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_generate_noir_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_noir_proof(
                 FfiConverterString.lower(`circuitPath`),
                 FfiConverterOptionalString.lower(`srsPath`),
                 FfiConverterSequenceString.lower(`inputs`),
@@ -1738,15 +1738,29 @@ fun `generateNoirProof`(
         },
     )
 
-fun `proveKeccak256Simple`(
+fun `proveAnonAadhaarSimple`(
     `srsPath`: kotlin.String,
-    `inputs`: kotlin.ByteArray,
+    `inputs`: List<kotlin.String>,
 ): kotlin.ByteArray =
     FfiConverterByteArray.lift(
         uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_prove_keccak256_simple(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_prove_anon_aadhaar_simple(
                 FfiConverterString.lower(`srsPath`),
-                FfiConverterByteArray.lower(`inputs`),
+                FfiConverterSequenceString.lower(`inputs`),
+                _status,
+            )
+        },
+    )
+
+fun `verifyAnonAadhaarSimple`(
+    `srsPath`: kotlin.String,
+    `proof`: kotlin.ByteArray,
+): kotlin.Boolean =
+    FfiConverterBoolean.lift(
+        uniffiRustCall { _status ->
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_anon_aadhaar_simple(
+                FfiConverterString.lower(`srsPath`),
+                FfiConverterByteArray.lower(`proof`),
                 _status,
             )
         },
@@ -1760,7 +1774,7 @@ fun `verifyCircomProof`(
 ): kotlin.Boolean =
     FfiConverterBoolean.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_verify_circom_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_circom_proof(
                 FfiConverterString.lower(`zkeyPath`),
                 FfiConverterTypeCircomProofResult.lower(`proofResult`),
                 FfiConverterTypeProofLib.lower(`proofLib`),
@@ -1778,25 +1792,11 @@ fun `verifyHalo2Proof`(
 ): kotlin.Boolean =
     FfiConverterBoolean.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_verify_halo2_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_halo2_proof(
                 FfiConverterString.lower(`srsPath`),
                 FfiConverterString.lower(`vkPath`),
                 FfiConverterByteArray.lower(`proof`),
                 FfiConverterByteArray.lower(`publicInput`),
-                _status,
-            )
-        },
-    )
-
-fun `verifyKeccak256Simple`(
-    `srsPath`: kotlin.String,
-    `proof`: kotlin.ByteArray,
-): kotlin.Boolean =
-    FfiConverterBoolean.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_verify_keccak256_simple(
-                FfiConverterString.lower(`srsPath`),
-                FfiConverterByteArray.lower(`proof`),
                 _status,
             )
         },
@@ -1809,7 +1809,7 @@ fun `verifyNoirProof`(
 ): kotlin.Boolean =
     FfiConverterBoolean.lift(
         uniffiRustCallWithError(MoproException) { _status ->
-            UniffiLib.INSTANCE.uniffi_mopro_example_app_keccak256_fn_func_verify_noir_proof(
+            UniffiLib.INSTANCE.uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_noir_proof(
                 FfiConverterString.lower(`circuitPath`),
                 FfiConverterByteArray.lower(`proof`),
                 _status,
