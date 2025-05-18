@@ -5,6 +5,27 @@
 import SwiftUI
 import moproFFI
 
+// Structs for parsing anon_aadhaar_inputs.json
+struct AnonAadhaarQrDataPadded: Decodable {
+    let storage: [String]
+    let len: String
+}
+
+struct AnonAadhaarInputs: Decodable {
+    let qrDataPadded: AnonAadhaarQrDataPadded
+    let qrDataPaddedLength: String
+    let delimiterIndices: [String]
+    let signature_limbs: [String]
+    let modulus_limbs: [String]
+    let redc_limbs: [String]
+    let revealAgeAbove18: String
+    let revealGender: String
+    let revealPinCode: String
+    let revealState: String
+    let nullifierSeed: String
+    let signalHash: String
+}
+
 func serializeOutputs(_ stringArray: [String]) -> [UInt8] {
     var bytesArray: [UInt8] = []
     let length = stringArray.count
@@ -40,9 +61,9 @@ struct ContentView: View {
     @State private var circomPublicInputs: [String]?
     @State private var generatedHalo2Proof: Data?
     @State private var halo2PublicInputs: Data?
-    @State private var isKeccakProveButtonEnabled = true
-    @State private var isKeccakVerifyButtonEnabled = false
-    @State private var generatedKeccakProof: Data?
+    @State private var isAnonAadhaarProveButtonEnabled = true
+    @State private var isAnonAadhaarVerifyButtonEnabled = false
+    @State private var generatedAnonAadhaarProof: Data?
     private let zkeyPath = Bundle.main.path(forResource: "multiplier2_final", ofType: "zkey")!
     private let srsPath = Bundle.main.path(forResource: "plonk_fibonacci_srs.bin", ofType: "")!
     private let vkPath = Bundle.main.path(forResource: "plonk_fibonacci_vk.bin", ofType: "")!
@@ -57,8 +78,8 @@ struct ContentView: View {
             Button("Verify Circom", action: runCircomVerifyAction).disabled(!isCircomVerifyButtonEnabled).accessibilityIdentifier("verifyCircom")
             Button("Prove Halo2", action: runHalo2ProveAction).disabled(!isHalo2roveButtonEnabled).accessibilityIdentifier("proveHalo2")
             Button("Verify Halo2", action: runHalo2VerifyAction).disabled(!isHalo2VerifyButtonEnabled).accessibilityIdentifier("verifyHalo2")
-            Button("Prove Keccak256", action: runKeccakProveAction).disabled(!isKeccakProveButtonEnabled).accessibilityIdentifier("proveKeccak")
-            Button("Verify Keccak256", action: runKeccakVerifyAction).disabled(!isKeccakVerifyButtonEnabled).accessibilityIdentifier("verifyKeccak")
+            Button("Prove Anon Aadhaar", action: runAnonAadhaarProveAction).disabled(!isAnonAadhaarProveButtonEnabled).accessibilityIdentifier("proveAnonAadhaar")
+            Button("Verify Anon Aadhaar", action: runAnonAadhaarVerifyAction).disabled(!isAnonAadhaarVerifyButtonEnabled).accessibilityIdentifier("verifyAnonAadhaar")
 
             ScrollView {
                 Text(textViewText)
@@ -201,97 +222,140 @@ extension ContentView {
         }
     }
 
-    func runKeccakProveAction() {
-        textViewText += "Generating Keccak256 proof... "
+    func runAnonAadhaarProveAction() {
+        textViewText += "Generating Anon Aadhaar proof... "
 
-        guard let srsPath = Bundle.main.path(forResource: "zkemail_srs", ofType: "local") else {
+        // Use "anon_srs.local"
+        guard let srsPath = Bundle.main.path(forResource: "anon_srs", ofType: "local") else {
             DispatchQueue.main.async {
-                self.textViewText += "\nError: Could not find srs.local in app bundle.\n"
+                self.textViewText += "\nError: Could not find anon_srs.local in app bundle.\n"
             }
             return
         }
+        
+        // Load inputs from JSON
+        guard let parsedInputs = loadAnonAadhaarInputsFromFile() else {
+            // Error message is handled by loadAnonAadhaarInputsFromFile
+            return
+        }
+        
+        // Construct the flat input array in the correct order
+        var inputs: [String] = []
+        inputs.append(contentsOf: parsedInputs.qrDataPadded.storage)
+        inputs.append(parsedInputs.qrDataPadded.len)
+        inputs.append(parsedInputs.qrDataPaddedLength)
+        inputs.append(contentsOf: parsedInputs.delimiterIndices)
+        inputs.append(contentsOf: parsedInputs.signature_limbs)
+        inputs.append(contentsOf: parsedInputs.modulus_limbs)
+        inputs.append(contentsOf: parsedInputs.redc_limbs)
+        inputs.append(parsedInputs.revealAgeAbove18)
+        inputs.append(parsedInputs.revealGender)
+        inputs.append(parsedInputs.revealPinCode)
+        inputs.append(parsedInputs.revealState)
+        inputs.append(parsedInputs.nullifierSeed)
+        inputs.append(parsedInputs.signalHash)
 
-        let example_x_values: [UInt8] = [123, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        let example_result_values: [UInt8] = [117, 161, 42, 122, 171, 96, 25, 82, 239, 113, 221, 109, 167, 23, 37, 234, 164, 235, 120, 131, 9, 96, 103, 84, 108, 138, 227, 249, 156, 201, 34, 46]
-        let inputsArray: [UInt8] = example_x_values + example_result_values
-        let inputsData = Data(inputsArray)
-
-        // Run in background thread to avoid blocking the UI
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let start = CFAbsoluteTimeGetCurrent()
 
-                let proofData = try! proveKeccak256Simple(srsPath: srsPath, inputs: inputsData)
+                // Call the FFI function proveAnonAadhaarSimple
+                let proofData = try proveAnonAadhaarSimple(srsPath: srsPath, inputs: inputs)
                 assert(!proofData.isEmpty, "Proof should not be empty")
 
                 let end = CFAbsoluteTimeGetCurrent()
                 let timeTaken = end - start
 
-                // Update UI on the main thread
                 DispatchQueue.main.async {
-                    self.generatedKeccakProof = proofData
+                    self.generatedAnonAadhaarProof = proofData
                     self.textViewText += "\(String(format: "%.3f", timeTaken))s 1️⃣\n"
-                    self.isKeccakVerifyButtonEnabled = true
-                    self.isKeccakProveButtonEnabled = false // Disable prove button after successful proof
+                    self.isAnonAadhaarVerifyButtonEnabled = true
+                    self.isAnonAadhaarProveButtonEnabled = false
                 }
             } catch {
-                // Update UI on the main thread
                 DispatchQueue.main.async {
-                    self.textViewText += "\nProof generation failed: \(error.localizedDescription)\n"
+                    self.textViewText += "\nAnon Aadhaar proof generation failed: \(error.localizedDescription)\n"
                 }
             }
         }
     }
 
-    func runKeccakVerifyAction() {
-        guard let proofData = generatedKeccakProof else {
-            textViewText += "Proof has not been generated yet.\n"
+    func runAnonAadhaarVerifyAction() {
+        guard let proofData = generatedAnonAadhaarProof else {
+            textViewText += "Anon Aadhaar proof has not been generated yet.\n"
             return
         }
 
-        guard let srsPath = Bundle.main.path(forResource: "zkemail_srs", ofType: "local") else {
+        // Use "anon_srs.local"
+        guard let srsPath = Bundle.main.path(forResource: "anon_srs", ofType: "local") else {
             DispatchQueue.main.async {
-                self.textViewText += "\nError: Could not find srs.local in app bundle.\n"
+                self.textViewText += "\nError: Could not find anon_srs.local in app bundle.\n"
             }
             return
         }
 
-        textViewText += "Verifying Keccak256 proof... "
+        textViewText += "Verifying Anon Aadhaar proof... "
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let start = CFAbsoluteTimeGetCurrent()
 
-                // Pass proofData (which is Data) directly to the FFI function
-                let isValid = try! verifyKeccak256Simple(srsPath: srsPath, proof: proofData)
+                // Call the FFI function verifyAnonAadhaarSimple
+                let isValid = try verifyAnonAadhaarSimple(srsPath: srsPath, proof: proofData)
                 let end = CFAbsoluteTimeGetCurrent()
                 let timeTaken = end - start
 
-                // Update UI on the main thread
                 DispatchQueue.main.async {
                     if isValid {
                         self.textViewText += "\(String(format: "%.3f", timeTaken))s 2️⃣\n"
                     } else {
-                        self.textViewText += "\nProof verification failed.\n"
+                        self.textViewText += "\nAnon Aadhaar proof verification failed.\n"
                     }
-                    self.isKeccakVerifyButtonEnabled = false
-                    // Optionally re-enable prove button or handle state differently after verification
-                     self.isKeccakProveButtonEnabled = true 
+                    self.isAnonAadhaarVerifyButtonEnabled = false
+                    self.isAnonAadhaarProveButtonEnabled = true
                 }
             } catch let error as MoproError {
-                // Update UI on the main thread
                 DispatchQueue.main.async {
                     self.textViewText += "\nMoproError: \(error)\n"
-                    self.isKeccakVerifyButtonEnabled = false // Keep verify disabled on error
+                    self.isAnonAadhaarVerifyButtonEnabled = false
                 }
             } catch {
-                // Update UI on the main thread
                 DispatchQueue.main.async {
                     self.textViewText += "\nUnexpected error: \(error.localizedDescription)\n"
-                    self.isKeccakVerifyButtonEnabled = false // Keep verify disabled on error
+                    self.isAnonAadhaarVerifyButtonEnabled = false
                 }
             }
         }
+    }
+}
+
+// Helper function to load and parse inputs from anon_aadhaar_inputs.json
+func loadAnonAadhaarInputsFromFile() -> AnonAadhaarInputs? {
+    guard let url = Bundle.main.url(forResource: "anon_aadhaar_inputs", withExtension: "json") else {
+        // Update UI on the main thread for error reporting
+        DispatchQueue.main.async {
+            // It's better to update a @State variable that ContentView observes
+            // For now, printing to console and updating a static text view if available or a shared error state.
+            // This part needs to be adapted to how ContentView manages its state for textViewText.
+            // For simplicity, directly trying to update if self is accessible or just printing.
+            // A more robust solution would involve passing the view model or a callback.
+            print("Error: Could not find anon_aadhaar_inputs.json in app bundle.")
+            // If you have access to textViewText or similar state variable here:
+            // self.textViewText += "\nError: Could not find anon_aadhaar_inputs.json in app bundle.\n"
+        }
+        return nil
+    }
+    do {
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        let inputs = try decoder.decode(AnonAadhaarInputs.self, from: data)
+        return inputs
+    } catch {
+        DispatchQueue.main.async {
+            print("Error: Could not parse anon_aadhaar_inputs.json: \(error.localizedDescription)")
+            // self.textViewText += "\nError: Could not parse anon_aadhaar_inputs.json: \(error.localizedDescription)\n"
+        }
+        return nil
     }
 }
 

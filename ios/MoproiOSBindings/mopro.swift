@@ -25,13 +25,13 @@ fileprivate extension RustBuffer {
     }
 
     static func from(_ ptr: UnsafeBufferPointer<UInt8>) -> RustBuffer {
-        try! rustCall { ffi_mopro_example_app_keccak256_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
+        try! rustCall { ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
     }
 
     // Frees the buffer in place.
     // The buffer must not be used after this is called.
     func deallocate() {
-        try! rustCall { ffi_mopro_example_app_keccak256_rustbuffer_free(self, $0) }
+        try! rustCall { ffi_mopro_example_app_anon_aadhaar_noir_rustbuffer_free(self, $0) }
     }
 }
 
@@ -281,7 +281,7 @@ private func makeRustCall<T, E: Swift.Error>(
     _ callback: (UnsafeMutablePointer<RustCallStatus>) -> T,
     errorHandler: ((RustBuffer) throws -> E)?
 ) throws -> T {
-    uniffiEnsureMoproExampleAppKeccak256Initialized()
+    uniffiEnsureMoproExampleAppAnonAadhaarNoirInitialized()
     var callStatus = RustCallStatus.init()
     let returnedVal = callback(&callStatus)
     try uniffiCheckCallStatus(callStatus: callStatus, errorHandler: errorHandler)
@@ -1106,7 +1106,7 @@ fileprivate struct FfiConverterDictionaryStringSequenceString: FfiConverterRustB
 }
 public func generateCircomProof(zkeyPath: String, circuitInputs: String, proofLib: ProofLib)throws  -> CircomProofResult  {
     return try  FfiConverterTypeCircomProofResult_lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_generate_circom_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_circom_proof(
         FfiConverterString.lower(zkeyPath),
         FfiConverterString.lower(circuitInputs),
         FfiConverterTypeProofLib_lower(proofLib),$0
@@ -1115,7 +1115,7 @@ public func generateCircomProof(zkeyPath: String, circuitInputs: String, proofLi
 }
 public func generateHalo2Proof(srsPath: String, pkPath: String, circuitInputs: [String: [String]])throws  -> Halo2ProofResult  {
     return try  FfiConverterTypeHalo2ProofResult_lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_generate_halo2_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_halo2_proof(
         FfiConverterString.lower(srsPath),
         FfiConverterString.lower(pkPath),
         FfiConverterDictionaryStringSequenceString.lower(circuitInputs),$0
@@ -1124,24 +1124,32 @@ public func generateHalo2Proof(srsPath: String, pkPath: String, circuitInputs: [
 }
 public func generateNoirProof(circuitPath: String, srsPath: String?, inputs: [String])throws  -> Data  {
     return try  FfiConverterData.lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_generate_noir_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_generate_noir_proof(
         FfiConverterString.lower(circuitPath),
         FfiConverterOptionString.lower(srsPath),
         FfiConverterSequenceString.lower(inputs),$0
     )
 })
 }
-public func proveKeccak256Simple(srsPath: String, inputs: Data) -> Data  {
+public func proveAnonAadhaarSimple(srsPath: String, inputs: [String]) -> Data  {
     return try!  FfiConverterData.lift(try! rustCall() {
-    uniffi_mopro_example_app_keccak256_fn_func_prove_keccak256_simple(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_prove_anon_aadhaar_simple(
         FfiConverterString.lower(srsPath),
-        FfiConverterData.lower(inputs),$0
+        FfiConverterSequenceString.lower(inputs),$0
+    )
+})
+}
+public func verifyAnonAadhaarSimple(srsPath: String, proof: Data) -> Bool  {
+    return try!  FfiConverterBool.lift(try! rustCall() {
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_anon_aadhaar_simple(
+        FfiConverterString.lower(srsPath),
+        FfiConverterData.lower(proof),$0
     )
 })
 }
 public func verifyCircomProof(zkeyPath: String, proofResult: CircomProofResult, proofLib: ProofLib)throws  -> Bool  {
     return try  FfiConverterBool.lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_verify_circom_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_circom_proof(
         FfiConverterString.lower(zkeyPath),
         FfiConverterTypeCircomProofResult_lower(proofResult),
         FfiConverterTypeProofLib_lower(proofLib),$0
@@ -1150,7 +1158,7 @@ public func verifyCircomProof(zkeyPath: String, proofResult: CircomProofResult, 
 }
 public func verifyHalo2Proof(srsPath: String, vkPath: String, proof: Data, publicInput: Data)throws  -> Bool  {
     return try  FfiConverterBool.lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_verify_halo2_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_halo2_proof(
         FfiConverterString.lower(srsPath),
         FfiConverterString.lower(vkPath),
         FfiConverterData.lower(proof),
@@ -1158,17 +1166,9 @@ public func verifyHalo2Proof(srsPath: String, vkPath: String, proof: Data, publi
     )
 })
 }
-public func verifyKeccak256Simple(srsPath: String, proof: Data) -> Bool  {
-    return try!  FfiConverterBool.lift(try! rustCall() {
-    uniffi_mopro_example_app_keccak256_fn_func_verify_keccak256_simple(
-        FfiConverterString.lower(srsPath),
-        FfiConverterData.lower(proof),$0
-    )
-})
-}
 public func verifyNoirProof(circuitPath: String, proof: Data)throws  -> Bool  {
     return try  FfiConverterBool.lift(try rustCallWithError(FfiConverterTypeMoproError_lift) {
-    uniffi_mopro_example_app_keccak256_fn_func_verify_noir_proof(
+    uniffi_mopro_example_app_anon_aadhaar_noir_fn_func_verify_noir_proof(
         FfiConverterString.lower(circuitPath),
         FfiConverterData.lower(proof),$0
     )
@@ -1186,32 +1186,32 @@ private let initializationResult: InitializationResult = {
     // Get the bindings contract version from our ComponentInterface
     let bindings_contract_version = 29
     // Get the scaffolding contract version by calling the into the dylib
-    let scaffolding_contract_version = ffi_mopro_example_app_keccak256_uniffi_contract_version()
+    let scaffolding_contract_version = ffi_mopro_example_app_anon_aadhaar_noir_uniffi_contract_version()
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_generate_circom_proof() != 59512) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_circom_proof() != 6117) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_generate_halo2_proof() != 50946) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_halo2_proof() != 1693) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_generate_noir_proof() != 11214) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_generate_noir_proof() != 29049) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_prove_keccak256_simple() != 61307) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_prove_anon_aadhaar_simple() != 14586) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_verify_circom_proof() != 55715) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_anon_aadhaar_simple() != 11426) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_verify_halo2_proof() != 435) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_circom_proof() != 18845) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_verify_keccak256_simple() != 49870) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_halo2_proof() != 13449) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_example_app_keccak256_checksum_func_verify_noir_proof() != 25805) {
+    if (uniffi_mopro_example_app_anon_aadhaar_noir_checksum_func_verify_noir_proof() != 28357) {
         return InitializationResult.apiChecksumMismatch
     }
 
@@ -1220,7 +1220,7 @@ private let initializationResult: InitializationResult = {
 
 // Make the ensure init function public so that other modules which have external type references to
 // our types can call it.
-public func uniffiEnsureMoproExampleAppKeccak256Initialized() {
+public func uniffiEnsureMoproExampleAppAnonAadhaarNoirInitialized() {
     switch initializationResult {
     case .ok:
         break
