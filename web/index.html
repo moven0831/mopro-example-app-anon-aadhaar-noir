@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noir Web App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .input-area {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .input-area input[type="text"], .input-area input[type="number"] {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      flex-grow: 1;
+    }
+    .input-area button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .input-area button:hover {
+      background-color: #0056b3;
+    }
+    .outer {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 20px;
+    }
+    .inner {
+      width: 48%;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 4px;
+      word-wrap: break-word;
+      min-height: 150px;
+      overflow-y: auto;
+    }
+    .inner h2 {
+      margin-top: 0;
+      color: #555;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Noir Web App</h1>
+    <div class="input-area">
+      <!-- The tutorial uses an 'age' input. We'll make this generic for now.
+           If your circuit has specific input names, we'll adjust this later. -->
+      <!-- <input id="input" type="text" placeholder='Enter Semaphore input JSON, e.g., { "secret_key": "1", "index_bits": ["0","1"], "hash_path": ["1","2"], "merkle_proof_length": "2", "hashed_scope": "scope", "hashed_message": "message" }' /> -->
+      <button id="submit">Prove Anon Aadhaar</button>
+    </div>
+    <div class="outer">
+      <div id="logs" class="inner"><h2>Logs</h2></div>
+      <div id="results" class="inner"><h2>Proof</h2></div>
+    </div>
+  </div>
+  <script type="module" src="/index.js"></script>
+</body>
+</html>
